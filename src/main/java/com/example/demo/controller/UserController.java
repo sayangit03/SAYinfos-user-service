@@ -76,19 +76,16 @@ public class UserController {
 		return "Done!";
 	}
 	
-	@GetMapping("/approveUser")
-	public String approveUser(UserRegistration user) {
-		user = new UserRegistration();
-		user.setUserEmail("sayman.eye@gmail.com");
-		
-		
-		UserRegistration userCheck = userRegRepo.findByUserEmail(user.getUserEmail());
+	@GetMapping("/approveAdmin/{email}")
+	public String approveAdmin(@PathVariable String email) {		
+		System.out.println("user service approve admin: "+email);
+		UserRegistration userCheck = userRegRepo.findByUserEmail(email);
 		if(!userCheck.isUserStatus()) {
 			UserLogin login = new UserLogin();
 			login.setUserName(userCheck.getUserName());
 			login.setUserPwd(userCheck.getUserPwd());
 			login.setUserRole("Admin");
-			login.setUniqueName(userCheck.getUserEmail().substring(0, 3)+"_0"+userCheck.getId());
+			login.setUniqueName(userCheck.getUserEmail().substring(0, 3).toLowerCase()+"_a0"+userCheck.getId());
 
 			UserDetails details = new UserDetails();
 			details.setUserAdrs(userCheck.getUserAdrs());
@@ -103,8 +100,40 @@ public class UserController {
 			
 			userCheck.setUserStatus(true);
 			userRegRepo.save(userCheck);
+			
+			return "Approved"+login.getUniqueName();
 		}
-		return "User approved!";
+		return "NotApproved";
+	}
+	
+	@GetMapping("/approveUser/{email}")
+	public String approveUser(@PathVariable String email) {		
+		System.out.println("user service approve admin: "+email);
+		UserRegistration userCheck = userRegRepo.findByUserEmail(email);
+		if(!userCheck.isUserStatus()) {
+			UserLogin login = new UserLogin();
+			login.setUserName(userCheck.getUserName());
+			login.setUserPwd(userCheck.getUserPwd());
+			login.setUserRole("User");
+			login.setUniqueName(userCheck.getUserEmail().substring(0, 3).toLowerCase()+"_u0"+userCheck.getId());
+
+			UserDetails details = new UserDetails();
+			details.setUserAdrs(userCheck.getUserAdrs());
+			details.setUserPhnNum(userCheck.getUserPhnNum());
+			details.setUserEmail(userCheck.getUserEmail());
+
+			login.setUserDetails(details);
+			details.setLogin(login);
+
+			loginRepo.save(login);
+			detailsRepo.save(details);
+			
+			userCheck.setUserStatus(true);
+			userRegRepo.save(userCheck);
+			
+			return "Approved"+login.getUniqueName();
+		}
+		return "NotApproved";
 	}
 	
 	@GetMapping("/getRegUserDetails")
