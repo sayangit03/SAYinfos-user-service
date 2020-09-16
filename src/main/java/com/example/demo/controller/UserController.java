@@ -12,15 +12,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.bean.UserRegistrationBean;
 import com.example.demo.bean.UserDetails;
 import com.example.demo.bean.UserLogin;
 import com.example.demo.bean.UserRegistration;
+import com.example.demo.bean.UserRegistrationBean;
 import com.example.demo.repository.UserDetailsRepository;
 import com.example.demo.repository.UserLoginRepository;
 import com.example.demo.repository.UserRegistrationRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
+@Slf4j
 public class UserController {
 
 	@Autowired
@@ -31,35 +34,37 @@ public class UserController {
 
 	@Autowired
 	UserRegistrationRepository userRegRepo;
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@GetMapping("/getUserDetails")
 	public List<UserDetails> getUserDetails() {
+		log.info("Fetching user details..");
 		List<UserDetails> usrDetailsList = detailsRepo.findAll();
 		return usrDetailsList;
 	}
-	
+
 	@GetMapping("/getUserDetails/user/{uniqueName}/pwd/{pwd}")
 	public boolean getUserDetailsByUniqueName(@PathVariable String uniqueName, @PathVariable String pwd) {
-		List<UserDetails> usrDetail = detailsRepo.findByUniqueName(uniqueName);
-		if(usrDetail.size()==0)
+		log.info("Authentication started with user name: " + uniqueName);
+		List<UserLogin> loginDetail = loginRepo.findByUniqueName(uniqueName);
+		if (loginDetail.size() == 0)
 			return false;
-		
-		boolean okToGoFlag = passwordEncoder.matches(pwd, usrDetail.get(0).getLogin().getUserPwd());
-		if(okToGoFlag)
+
+		boolean okToGoFlag = passwordEncoder.matches(pwd, loginDetail.get(0).getUserPwd());
+		if (okToGoFlag)
 			return true;
 		return false;
 	}
 
 	@PostMapping(path = "/userRegistration", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public String userRegistration(@RequestBody UserRegistrationBean user) {
-		System.out.println(">>>>>>>>>>>>"+user.getName());
-		
+		log.info("Registration started for user: " + user.getName());
 		UserRegistration userCheck = userRegRepo.findByUserEmail(user.getEmail());
-		if(userCheck == null){
+		if (userCheck == null) {
 			UserRegistration userReg = new UserRegistration();
+			userReg.setId((int) userRegRepo.count() + 1);
 			userReg.setUserName(user.getName());
 			userReg.setUserEmail(user.getEmail());
 			userReg.setUserPwd(passwordEncoder.encode(user.getPassword()));
@@ -69,77 +74,93 @@ public class UserController {
 			userReg.setRegDate(new Date());
 
 			userRegRepo.save(userReg);
-		}
-		else {
+		} else {
 			return "Already registered";
 		}
 		return "Done!";
 	}
-	
+
 	@GetMapping("/approveAdmin/{email}")
-	public String approveAdmin(@PathVariable String email) {		
-		System.out.println("user service approve admin: "+email);
+	public String approveAdmin(@PathVariable String email) {
+		log.info("Approving as role admin: " + email);
 		UserRegistration userCheck = userRegRepo.findByUserEmail(email);
-		if(!userCheck.isUserStatus()) {
+		if (!userCheck.isUserStatus()) {
 			UserLogin login = new UserLogin();
+			login.setId((int) loginRepo.count() + 1);
 			login.setUserName(userCheck.getUserName());
 			login.setUserPwd(userCheck.getUserPwd());
 			login.setUserRole("Admin");
-			login.setUniqueName(userCheck.getUserEmail().substring(0, 3).toLowerCase()+"_a0"+userCheck.getId());
+			login.setUniqueName(userCheck.getUserEmail().substring(0, 3).toLowerCase() + "_a0" + userCheck.getId());
 
 			UserDetails details = new UserDetails();
+			details.setId((int) detailsRepo.count() + 1);
 			details.setUserAdrs(userCheck.getUserAdrs());
 			details.setUserPhnNum(userCheck.getUserPhnNum());
 			details.setUserEmail(userCheck.getUserEmail());
 
-			login.setUserDetails(details);
 			details.setLogin(login);
 
 			loginRepo.save(login);
 			detailsRepo.save(details);
-			
+
 			userCheck.setUserStatus(true);
 			userRegRepo.save(userCheck);
-			
-			return "Approved"+login.getUniqueName();
+
+			return "Approved" + login.getUniqueName();
 		}
 		return "NotApproved";
 	}
-	
+
 	@GetMapping("/approveUser/{email}")
-	public String approveUser(@PathVariable String email) {		
-		System.out.println("user service approve admin: "+email);
+	public String approveUser(@PathVariable String email) {
+		log.info("Approving as role user: " + email);
 		UserRegistration userCheck = userRegRepo.findByUserEmail(email);
-		if(!userCheck.isUserStatus()) {
+		if (!userCheck.isUserStatus()) {
 			UserLogin login = new UserLogin();
+			login.setId((int) loginRepo.count() + 1);
 			login.setUserName(userCheck.getUserName());
 			login.setUserPwd(userCheck.getUserPwd());
 			login.setUserRole("User");
-			login.setUniqueName(userCheck.getUserEmail().substring(0, 3).toLowerCase()+"_u0"+userCheck.getId());
+			login.setUniqueName(userCheck.getUserEmail().substring(0, 3).toLowerCase() + "_u0" + userCheck.getId());
 
 			UserDetails details = new UserDetails();
+			details.setId((int) detailsRepo.count() + 1);
 			details.setUserAdrs(userCheck.getUserAdrs());
 			details.setUserPhnNum(userCheck.getUserPhnNum());
 			details.setUserEmail(userCheck.getUserEmail());
 
-			login.setUserDetails(details);
 			details.setLogin(login);
 
 			loginRepo.save(login);
 			detailsRepo.save(details);
-			
+
 			userCheck.setUserStatus(true);
 			userRegRepo.save(userCheck);
-			
-			return "Approved"+login.getUniqueName();
+
+			return "Approved" + login.getUniqueName();
 		}
 		return "NotApproved";
 	}
-	
+
 	@GetMapping("/getRegUserDetails")
 	public List<UserRegistration> getRegUserDetails() {
+		log.info("Fetching registered user details..");
 		List<UserRegistration> usrRegDetailsList = userRegRepo.findAll();
 		return usrRegDetailsList;
 	}
 
+	@GetMapping("/removeUserFromLogin/{email}")
+	public String removeUserFromLogin(@PathVariable String email) {
+		log.info("Removing user details from login..");
+		UserDetails user = detailsRepo.findByUserEmail(email);
+		int userId = user.getId();
+		loginRepo.deleteById(userId);
+		detailsRepo.deleteById(userId);
+
+		UserRegistration userCheck = userRegRepo.findByUserEmail(email);
+		userCheck.setUserStatus(false);
+		userRegRepo.save(userCheck);
+
+		return "Removed";
+	}
 }

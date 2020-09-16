@@ -12,6 +12,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import brave.sampler.Sampler;
+
 @SpringBootApplication
 //@EnableDiscoveryClient
 @ComponentScan(basePackages = { "com.example.demo.bean", "com.example.demo.repository", "com.example.demo.controller" })
@@ -31,4 +33,8 @@ public class UserServiceApplication extends SpringBootServletInitializer {
 		return new BCryptPasswordEncoder();
 	}
 
+	@Bean
+	public Sampler alwaysSampler() {
+		return Sampler.ALWAYS_SAMPLE;
+	}
 }
