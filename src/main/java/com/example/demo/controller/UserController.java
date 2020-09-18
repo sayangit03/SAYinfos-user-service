@@ -38,6 +38,11 @@ public class UserController {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	@GetMapping("/")
+	public String welcome() {
+		return "welcome to user-service- a microservice module for SAYinfos";
+	}
+
 	@GetMapping("/getUserDetails")
 	public List<UserDetails> getUserDetails() {
 		log.info("Fetching user details..");
