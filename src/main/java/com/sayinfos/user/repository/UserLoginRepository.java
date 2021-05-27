@@ -1,10 +1,10 @@
-package com.example.demo.repository;
+package com.sayinfos.user.repository;
 
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.example.demo.bean.UserLogin;
+import com.sayinfos.user.bean.UserLogin;
 
 public interface UserLoginRepository extends MongoRepository<UserLogin, Integer> {
 

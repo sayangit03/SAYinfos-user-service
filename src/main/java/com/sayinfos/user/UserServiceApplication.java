@@ -1,7 +1,7 @@
 /**
  * Project SAYinfos
  */
-package com.example.demo;
+package com.sayinfos.user;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +16,7 @@ import brave.sampler.Sampler;
 
 @SpringBootApplication
 //@EnableDiscoveryClient
-@ComponentScan(basePackages = { "com.example.demo.bean", "com.example.demo.repository", "com.example.demo.controller" })
+@ComponentScan(basePackages = { "com.sayinfos.user.bean", "com.sayinfos.user.repository", "com.sayinfos.user.controller" })
 public class UserServiceApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {

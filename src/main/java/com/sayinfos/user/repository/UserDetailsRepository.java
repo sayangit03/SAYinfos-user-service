@@ -1,8 +1,8 @@
-package com.example.demo.repository;
+package com.sayinfos.user.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.example.demo.bean.UserDetails;
+import com.sayinfos.user.bean.UserDetails;
 
 public interface UserDetailsRepository extends MongoRepository<UserDetails, Integer> {
 

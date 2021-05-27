@@ -1,4 +1,4 @@
-package com.example.demo.bean;
+package com.sayinfos.user.bean;
 
 public class UserRegistrationBean {
 	

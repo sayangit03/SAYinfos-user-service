@@ -1,4 +1,4 @@
-package com.example.demo.bean;
+package com.sayinfos.user.bean;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;

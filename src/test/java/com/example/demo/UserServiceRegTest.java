@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
-import com.example.demo.bean.UserRegistration;
+import com.sayinfos.user.bean.UserRegistration;
 
 import lombok.extern.slf4j.Slf4j;
 

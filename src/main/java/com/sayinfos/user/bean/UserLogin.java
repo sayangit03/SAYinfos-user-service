@@ -1,6 +1,4 @@
-package com.example.demo.bean;
-
-import java.util.Date;
+package com.sayinfos.user.bean;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,20 +8,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Document("user_registration")
+@Document("user_login")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRegistration {
+public class UserLogin {
 
 	@Id
 	private int id;
+	private String uniqueName;
 	private String userName;
 	private String userPwd;
-	private String userPhnNum;
-	private String userEmail;
-	private String userAdrs;
-	private boolean userStatus;
-	private Date regDate;
+	private String userRole;
 }

@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.sayinfos.user.controller;
 
 import java.util.Date;
 import java.util.List;
@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.bean.UserDetails;
-import com.example.demo.bean.UserLogin;
-import com.example.demo.bean.UserRegistration;
-import com.example.demo.bean.UserRegistrationBean;
-import com.example.demo.repository.UserDetailsRepository;
-import com.example.demo.repository.UserLoginRepository;
-import com.example.demo.repository.UserRegistrationRepository;
+import com.sayinfos.user.bean.UserDetails;
+import com.sayinfos.user.bean.UserLogin;
+import com.sayinfos.user.bean.UserRegistration;
+import com.sayinfos.user.bean.UserRegistrationBean;
+import com.sayinfos.user.repository.UserDetailsRepository;
+import com.sayinfos.user.repository.UserLoginRepository;
+import com.sayinfos.user.repository.UserRegistrationRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
