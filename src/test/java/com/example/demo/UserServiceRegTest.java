@@ -12,13 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
+import com.sayinfos.user.UserServiceApplication;
 import com.sayinfos.user.bean.UserRegistration;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Import(UserServiceTestConfig.class)
-@SpringBootTest(properties = "spring.config.location=src/test/resources/application.properties")
+@SpringBootTest(properties = "spring.config.location=src/test/resources/application.properties", classes = UserServiceApplication.class)
 public class UserServiceRegTest {
 
 	@Autowired
